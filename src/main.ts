@@ -32,10 +32,13 @@ async function bootstrap() {
 
   app.use('/uploads', express.static('uploads'));
 
-  // '0.0.0.0' es obligatorio para Fly.io
-  await app.listen(PORT, '0.0.0.0');
-
-  logger.log(`Listening to http://0.0.0.0:${PORT}`);
-  logger.log(`Swagger UI: http://0.0.0.0:${PORT}/swagger`);
+  await app.listen(PORT);
+  // Log current url of app
+  let baseUrl = app.getHttpServer().address().address;
+  if (baseUrl === '0.0.0.0' || baseUrl === '::') {
+    baseUrl = 'localhost';
+  }
+  logger.log(`Listening to http://${baseUrl}:${PORT}`);
+  logger.log(`Swagger UI: http://${baseUrl}:${PORT}/swagger`);
 }
 bootstrap();
